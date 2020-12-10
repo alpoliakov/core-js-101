@@ -205,11 +205,12 @@ function findFirstSingleChar(str) {
     return mapObj.set(item, arrIndexes);
   });
 
-  for (const [key, value] of mapObj.entries()) {
+  mapObj.forEach((value, key) => {
     if (value.length === 1) {
       resultArr.push(key);
     }
-  }
+  });
+
   return (resultArr.length > 0 ? resultArr[0] : null);
 }
 
@@ -369,10 +370,11 @@ function getDigitalRoot(num) {
 function isBracketsBalanced(str) {
   const brackets = '[]{}()<>';
   const stack = [];
+  const arrStr = [...str];
 
-  for (const bracket of str) {
+  for (let i = 0; i < arrStr.length; i += 1) {
+    const bracket = arrStr[i];
     const bracketsIndex = brackets.indexOf(bracket);
-
     if (bracketsIndex % 2 === 0) {
       stack.push(bracketsIndex + 1);
     } else if (stack.pop() !== bracketsIndex) {
