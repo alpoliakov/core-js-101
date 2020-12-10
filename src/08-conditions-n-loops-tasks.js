@@ -204,13 +204,12 @@ function findFirstSingleChar(str) {
     });
     return mapObj.set(item, arrIndexes);
   });
-
-  mapObj.forEach((value, key) => {
+  /* eslint-disable-next-line */
+  for (const [key, value] of mapObj.entries()) {
     if (value.length === 1) {
       resultArr.push(key);
     }
-  });
-
+  }
   return (resultArr.length > 0 ? resultArr[0] : null);
 }
 
@@ -370,11 +369,11 @@ function getDigitalRoot(num) {
 function isBracketsBalanced(str) {
   const brackets = '[]{}()<>';
   const stack = [];
-  const arrStr = [...str];
 
-  for (let i = 0; i < arrStr.length; i += 1) {
-    const bracket = arrStr[i];
+  /* eslint-disable-next-line */
+  for (const bracket of str) {
     const bracketsIndex = brackets.indexOf(bracket);
+
     if (bracketsIndex % 2 === 0) {
       stack.push(bracketsIndex + 1);
     } else if (stack.pop() !== bracketsIndex) {
