@@ -117,32 +117,106 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  idd: 0,
+  error: 'Element, id and pseudo-element should not occur more then one time inside the selector',
+  iddError: 'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+
+  checkIdd(idd) {
+    if (this.idd > idd) {
+      throw new Error(this.iddError);
+    }
+    if (idd === this.idd && [1, 2, 6].includes(idd)) {
+      throw new Error(this.error);
+    }
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    this.checkIdd(1);
+    const newObj = this;
+    const obj = { ...newObj };
+    obj.elem = `${value}`;
+    obj.idd = 1;
+    return obj;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    this.checkIdd(2);
+    const newObj = this;
+    const obj = { ...newObj };
+    if (obj.elem) {
+      obj.elem += `#${value}`;
+    } else {
+      obj.elem = `#${value}`;
+    }
+    obj.idd = 2;
+    return obj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    this.checkIdd(3);
+    const newObj = this;
+    const obj = { ...newObj };
+    if (obj.elem) {
+      obj.elem += `.${value}`;
+    } else {
+      obj.elem = `.${value}`;
+    }
+    obj.idd = 3;
+    return obj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    this.checkIdd(4);
+    const newObj = this;
+    const obj = { ...newObj };
+    if (obj.elem) {
+      obj.elem += `[${value}]`;
+    } else {
+      obj.elem = `[${value}]`;
+    }
+    obj.idd = 4;
+    return obj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    this.checkIdd(5);
+    const newObj = this;
+    const obj = { ...newObj };
+    if (obj.elem) {
+      obj.elem += `:${value}`;
+    } else {
+      obj.elem = `:${value}`;
+    }
+    obj.idd = 5;
+    return obj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    this.checkIdd(6);
+    const newObj = this;
+    const obj = { ...newObj };
+    if (obj.elem) {
+      obj.elem += `::${value}`;
+    } else {
+      obj.elem = `::${value}`;
+    }
+    obj.idd = 6;
+    return obj;
+  },
+
+  combine(selector1, combinator, selector2) {
+    const newObj = this;
+    const obj = { ...newObj };
+    obj.elem = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    obj.idd = 7;
+    return obj;
+  },
+
+  stringify() {
+    const result = this.elem;
+    this.elem = '';
+    this.idd = 0;
+    return result;
   },
 };
 
